@@ -2,51 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>BCS Builders - Quality Construction in Morabadi, Ranchi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden; /* Prevents horizontal scrollbar from animations */
-            user-select: none; /* Prevents text selection and typing cursor */
             cursor: default; /* Sets the default cursor for the whole page */
+            background-color: #f9fafb; /* A light gray fallback */
         }
+        
+        /* Corrects scroll position for anchored links on all screen sizes */
+        section[id] {
+            scroll-margin-top: 120px; 
+        }
+        @media (min-width: 1024px) {
+            section[id] {
+                scroll-margin-top: 80px;
+            }
+        }
+
         /* Ensure interactive elements are still clearly clickable */
-        a, button, .project-card, .service-card, label, .gallery-image {
+        a, button, .service-card, label, .slider-slide {
             cursor: pointer;
         }
+        .gallery-image {
+            cursor: default; /* Default cursor for gallery images */
+        }
+        @media (min-width: 1024px) {
+            .gallery-image {
+                cursor: pointer; /* Pointer cursor only on desktop */
+            }
+        }
+
         input, textarea {
             user-select: auto; /* Allow text selection in form fields */
             cursor: text;
         }
+        .no-select {
+            user-select: none;
+        }
+
+        @keyframes zoomIn {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
 
         .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Hero Image.jpg') no-repeat center center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('Hero_Banner_New.jpg') no-repeat center center/cover;
+            animation: zoomIn 20s ease-in-out infinite alternate;
+            z-index: -1;
         }
         
-        #services {
+        .background-section {
             position: relative;
             overflow: hidden;
             z-index: 1;
         }
-        #services::before {
+        .background-section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url('Background Image.jpg') no-repeat center center;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
-            transform: scale(1.15);
-            transition: transform 5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            background-position: center center;
             z-index: -1;
         }
-        #services.is-visible::before {
-            transform: scale(1);
+
+        #about::before, #what-drives-us::before {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('Background_Image.jpg');
+            animation: zoomIn 30s ease-in-out infinite alternate;
+        }
+        #services::before {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('Hero_Image.jpg');
+        }
+        #testimonials::before {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('Background_Image.jpg');
         }
 
         .cta-button {
@@ -56,12 +99,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-        .project-card:hover .project-overlay {
-            opacity: 1;
-        }
-        .project-overlay {
-            transition: opacity 0.4s ease;
-        }
         .service-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -69,19 +106,35 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        .gallery-image-container {
-            aspect-ratio: 4 / 3; /* Aspect ratio for landscape images */
-        }
+        
         .gallery-image {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .gallery-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 10;
+        @media (min-width: 1024px) {
+            .gallery-image:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+                z-index: 10;
+            }
+        }
+
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4 / 3;
+        }
+        .slider-wrapper {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slider-slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            height: 100%;
         }
 
         /* Animation base states */
@@ -92,7 +145,7 @@
         .fade-in-up { transform: translateY(30px); }
         .fade-in-left { transform: translateX(-40px); }
         .fade-in-right { transform: translateX(40px); }
-        .pop-in { transform: scale(0.95); } /* New pop-up animation state */
+        .pop-in { transform: scale(0.95); }
 
         /* State when element is visible */
         .is-visible {
@@ -101,143 +154,165 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
 
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-md sticky top-0 z-40">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="h-12">
-                <img src="BCS Old.jpg" alt="BCS Builders Logo" class="h-full w-auto">
-            </a>
-            <div class="hidden md:flex space-x-8 items-center">
+    <!-- Header & Navigation --><header id="main-header" class="bg-white shadow-md sticky top-0 z-40">
+        <nav class="container mx-auto px-6 py-3 flex justify-center lg:justify-between items-center relative">
+            <div class="lg:flex-1 min-w-0">
+                <a href="#" class="h-14 inline-block">
+                    <img src="BCS Old.jpg" alt="BCS Builders Logo" class="h-full w-auto">
+                </a>
+            </div>
+            
+            <div class="hidden lg:flex flex-1 justify-center items-center space-x-3">
+                <a href="tel:+919801063161" class="bg-[#ff5757] text-white px-4 py-2 rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center text-base font-semibold"><i class="fas fa-phone-alt mr-2"></i> Call Us</a>
+                <a href="https://wa.me/919801063161" target="_blank" rel="noopener noreferrer" class="bg-[#ff5757] text-white px-4 py-2 rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center text-base font-semibold"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+                <a href="mailto:bcscelestialbuilders@gmail.com" class="bg-[#ff5757] text-white px-4 py-2 rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center text-base font-semibold"><i class="fas fa-envelope mr-2"></i> Email Us</a>
+            </div>
+
+            <div class="hidden lg:flex flex-1 justify-end items-center space-x-6">
                 <a href="#about" class="text-gray-600 hover:text-[#f6b757] transition">About Us</a>
                 <a href="#projects" class="text-gray-600 hover:text-[#f6b757] transition">Projects</a>
                 <a href="#services" class="text-gray-600 hover:text-[#f6b757] transition">Services</a>
                 <a href="#gallery" class="text-gray-600 hover:text-[#f6b757] transition">Gallery</a>
-                <div class="relative">
-                    <button id="contact-dropdown-button" class="bg-[#ff5757] text-white px-4 py-2 rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center">
-                        Contact Us <i class="fas fa-caret-down ml-2"></i>
-                    </button>
-                    <div id="contact-dropdown-menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                        <a href="tel:+919801063161" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-phone-alt mr-2 text-[#f6b757]"></i>Call Us</a>
-                        <a href="mailto:bcscelestialbuilders@gmail.com" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fas fa-envelope mr-2 text-[#f6b757]"></i>Email Us</a>
-                        <a href="https://wa.me/919801063161" target="_blank" rel="noopener noreferrer" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i class="fab fa-whatsapp mr-2 text-[#f6b757]"></i>WhatsApp Us</a>
-                    </div>
-                </div>
+                <a href="#testimonials" class="text-gray-600 hover:text-[#f6b757] transition">Testimonials</a>
             </div>
-            <button id="mobile-menu-button" class="md:hidden text-gray-600">
+            <button id="mobile-menu-button" class="lg:hidden text-gray-600 absolute right-6 top-1/2 -translate-y-1/2">
                 <i class="fas fa-bars text-2xl"></i>
             </button>
         </nav>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white py-4">
+        <!-- Mobile Contact Bar --><div class="lg:hidden bg-white border-t border-gray-200 p-2 flex justify-around">
+            <a href="tel:+919801063161" class="bg-[#ff5757] text-white px-3 py-2 text-sm rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center font-semibold flex-1 justify-center mx-1"><i class="fas fa-phone-alt mr-2"></i> Call</a>
+            <a href="https://wa.me/919801063161" target="_blank" rel="noopener noreferrer" class="bg-[#ff5757] text-white px-3 py-2 text-sm rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center font-semibold flex-1 justify-center mx-1"><i class="fab fa-whatsapp mr-2"></i> WhatsApp</a>
+            <a href="mailto:bcscelestialbuilders@gmail.com" class="bg-[#ff5757] text-white px-3 py-2 text-sm rounded-md hover:bg-[#ff6f6f] transition cta-button flex items-center font-semibold flex-1 justify-center mx-1"><i class="fas fa-envelope mr-2"></i> Email</a>
+        </div>
+        <!-- Mobile Menu --><div id="mobile-menu" class="hidden lg:hidden bg-white py-4">
             <a href="#about" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">About Us</a>
             <a href="#projects" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Projects</a>
             <a href="#services" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Services</a>
             <a href="#gallery" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Gallery</a>
-            <a href="tel:+919801063161" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Call Us</a>
-            <a href="mailto:bcscelestialbuilders@gmail.com" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Email Us</a>
-            <a href="https://wa.me/919801063161" target="_blank" rel="noopener noreferrer" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">WhatsApp Us</a>
+            <a href="#testimonials" class="block px-6 py-2 text-gray-600 hover:bg-gray-100">Testimonials</a>
         </div>
     </header>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-section text-white h-[60vh] md:h-[80vh] flex items-center">
-            <div class="container mx-auto px-6 text-center">
+    <main class="no-select">
+        <!-- Hero Section --><section class="hero-section text-white h-[60vh] md:h-[80vh] flex items-center">
+            <div class="container mx-auto px-6 text-center relative z-10">
                 <h1 class="text-4xl md:text-6xl font-bold mb-4 leading-tight animate-on-scroll pop-in">Building Your Dreams in Ranchi</h1>
                 <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto animate-on-scroll pop-in" style="transition-delay: 150ms;">BCS Builders: Unwavering commitment to quality, innovation, and customer satisfaction in Morabadi and beyond.</p>
                 <a href="#projects" class="bg-[#ff5757] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#ff6f6f] transition cta-button animate-on-scroll pop-in" style="transition-delay: 300ms;">Explore Our Work</a>
             </div>
         </section>
 
-        <!-- About Us Section -->
-        <section id="about" class="py-20 bg-white">
-            <div class="container mx-auto px-6">
-                <div class="grid md:grid-cols-2 gap-12 items-center">
-                    <div class="animate-on-scroll fade-in-left">
-                        <img src="_DSC0111.jpg" alt="BCS Builders Team" class="rounded-lg shadow-xl w-full">
+        <!-- About Us Section --><section id="about" class="py-20 background-section">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg shadow-lg">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div class="animate-on-scroll fade-in-left">
+                            <img src="_DSC0111.jpg" alt="BCS Builders Team" class="rounded-lg shadow-xl w-full">
+                        </div>
+                        <div class="animate-on-scroll fade-in-right">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">About B<span class="text-[#ff5757]">C</span>S Builders</h2>
+                            <p class="text-gray-600 mb-6">
+                                BCS Builders is a reputable developer company nestled in the heart of Morabadi, Ranchi. Founded by two visionary brothers, following the Entrepreneurial footsteps of their Father, the company brings a unique blend of familial trust and professional expertise to every project. With a deep understanding of the region’s architectural character and local needs, BCS Builders is dedicated to transforming blueprints into reality—always with the homeowner’s vision in mind.
+                            </p>
+                        </div>
                     </div>
-                    <div class="animate-on-scroll fade-in-right">
-                        <h2 class="text-3xl font-bold text-gray-800 mb-4">About B<span class="text-[#ff5757]">C</span>S Builders</h2>
-                        <p class="text-gray-600 mb-4">
-                            Based in the heart of Morabadi, Ranchi, BCS Builders has been a cornerstone of local construction and development for over a decade. We are a team of passionate professionals dedicated to creating spaces that are not just buildings, but homes and thriving business environments.
-                        </p>
-                        <p class="text-gray-600 mb-6">
-                            Our philosophy is simple: combine modern architectural design with robust engineering and transparent processes. We believe in building lasting relationships with our clients, founded on trust and the shared goal of bringing their vision to life.
-                        </p>
-                        <div class="flex space-x-8">
-                            <div class="text-center">
-                                <span class="text-3xl font-bold text-[#f6b757]">10+</span>
-                                <p class="text-gray-500">Years of Experience</p>
+                    <div class="mt-20">
+                        <h3 class="text-3xl font-bold text-gray-800 mb-8 text-center">Meet the Builders</h3>
+                        <div class="grid md:grid-cols-3 gap-8 items-center">
+                            <div class="md:col-span-1 flex flex-col items-center space-y-4 animate-on-scroll fade-in-up">
+                                <img src="Aman_new_photo.jpg" alt="Aman Gupta" class="rounded-full shadow-xl w-48 h-48 md:w-56 md:h-56 object-cover">
+                                <p class="text-xl font-semibold text-gray-800">Aman Gupta</p>
                             </div>
-                            <div class="text-center">
-                                <span class="text-3xl font-bold text-[#f6b757]">200+</span>
-                                <p class="text-gray-500">Employees</p>
+                            <div class="md:col-span-1 flex flex-col items-center space-y-4 animate-on-scroll fade-in-up" style="transition-delay: 150ms;">
+                                <img src="Abhi_photo.JPG" alt="Abhi Gupta" class="rounded-full shadow-xl w-48 h-48 md:w-56 md:h-56 object-cover">
+                                <p class="text-xl font-semibold text-gray-800">Abhi Gupta</p>
                             </div>
-                            <div class="text-center">
-                                <span class="text-3xl font-bold text-[#f6b757]">100%</span>
-                                <p class="text-gray-500">Client Satisfaction</p>
+                            <div class="md:col-span-1 animate-on-scroll fade-in-up" style="transition-delay: 300ms;">
+                                <p class="text-gray-600 text-center md:text-left">Following in the entrepreneurial footsteps of their father, who established a renowned clothing business in the heart of Ranchi, brothers Aman and Abhi Gupta bring a legacy of quality and trust to the construction industry. Together, they are building a new future for the city, one exceptional home at a time.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        
+        <!-- What Drives Us Section --><section id="what-drives-us" class="py-20 background-section">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="bg-white/80 backdrop-blur-sm p-12 rounded-lg shadow-lg text-center max-w-4xl mx-auto">
+                     <h2 class="text-3xl font-bold text-gray-800 mb-4 animate-on-scroll fade-in-up">What Drives Us - Building Dreams 🏠</h2>
+                     <p class="text-gray-600 text-lg animate-on-scroll fade-in-up" style="transition-delay: 150ms;">
+                        At BCS Builders, our guiding principle is simple yet powerful: “Building your dreams.” This tagline isn't just a slogan—it's a promise. Whether crafting cozy residences or designing functional commercial spaces, our mission is to deliver structures that reflect your dreams, built with precision, integrity, and personalized care.
+                     </p>
+                </div>
+            </div>
+        </section>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-20">
+        <!-- Projects Section --><section id="projects" class="py-20 bg-white/70">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12 animate-on-scroll fade-in-up">
                     <h2 class="text-3xl font-bold text-gray-800">Our Landmark Project</h2>
                     <p class="text-gray-600 mt-2 max-w-2xl mx-auto">A showcase of our dedication to excellence in residential construction.</p>
                 </div>
-                <div class="flex justify-center">
-                    <!-- Project Card 1 -->
-                    <div id="project-card-trigger" class="bg-white rounded-lg shadow-lg overflow-hidden group project-card animate-on-scroll fade-in-up md:w-2/3 lg:w-1/2">
-                        <div class="relative">
-                            <img src="bcs.jpg" alt="Punam Enclave" class="w-full h-72 object-cover">
-                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 project-overlay flex items-center justify-center">
-                                <p class="text-white text-lg font-semibold">View Details</p>
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden animate-on-scroll fade-in-up">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-1/2 slider-container">
+                            <div class="slider-wrapper">
+                                <div class="slider-slide hidden md:block" style="background-image: url('Punam_Enclave_Hero.jpg'); background-size: cover; background-position: center 85%;"></div>
+                                <div class="slider-slide block md:hidden"><img src="Punam_Enclave_Hero.jpg" alt="Punam Enclave Exterior" class="w-full h-full object-contain"></div>
+                                <div class="slider-slide"><img src="Punam_Enclave_3D.jpg" alt="Punam Enclave 3D Plan" class="w-full h-full object-contain"></div>
+                                <div class="slider-slide"><img src="Punam_Enclave_Floorplan.jpg" alt="Punam Enclave Floorplan" class="w-full h-full object-contain"></div>
                             </div>
+                            <button class="slider-prev absolute top-1/2 left-2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition"><i class="fas fa-chevron-left"></i></button>
+                            <button class="slider-next absolute top-1/2 right-2 -translate-y-1/2 bg-black/30 text-white p-2 rounded-full hover:bg-black/50 transition"><i class="fas fa-chevron-right"></i></button>
                         </div>
-                        <div class="p-6 text-center">
-                            <h3 class="text-xl font-semibold mb-1">Punam Enclave</h3>
-                            <p class="text-xs text-gray-500 mb-2">(previously named Celestial Castle)</p>
-                            <p class="text-gray-600 mb-4">A serene residential complex in Morabadi, offering modern amenities amidst nature.</p>
-                            <span class="text-sm font-medium text-green-800 bg-green-100 px-3 py-1 rounded-full">Ongoing</span>
+                        <div class="p-8 md:w-1/2 flex flex-col justify-center">
+                             <h3 class="text-3xl font-bold text-gray-800">Punam Enclave</h3>
+                             <p class="text-base text-gray-500 mb-4">(previously named Celestial Castle)</p>
+                             <p class="text-gray-700 text-lg mb-6">A G+4 strong building in the heart of Morabadi, which is the lungs of Ranchi town. Amidst the lush greenery is this abode you can call your home. 3BHK luxurious flats with:</p>
+                             <ul class="list-none space-y-3 text-lg">
+                                <li class="flex items-center"><i class="fas fa-users mr-3 text-[#f6b757]"></i>A Community Space</li>
+                                <li class="flex items-center"><i class="fas fa-video mr-3 text-[#f6b757]"></i>CCTV Surveillance</li>
+                                <li class="flex items-center"><i class="fas fa-gopuram mr-3 text-[#f6b757]"></i>Temple within the premises</li>
+                                <li class="flex items-center"><i class="fas fa-elevator mr-3 text-[#f6b757]"></i>Lift</li>
+                                <li class="flex items-center"><i class="fas fa-tint mr-3 text-[#f6b757]"></i>24x7 Water Supply</li>
+                            </ul>
+                            <p class="pt-6 font-semibold text-gray-800 text-xl">All 3BHKs ranging from 1465 to 1510 sqft.</p>
+                            <span class="mt-4 text-sm font-medium text-green-800 bg-green-100 px-3 py-1 rounded-full self-start">Ongoing</span>
+                            <div class="mt-8">
+                                <a href="tel:+919801063161" class="w-full bg-[#ff5757] text-white px-10 py-5 rounded-md hover:bg-[#ff6f6f] transition cta-button font-semibold text-xl flex items-center justify-center">
+                                    <i class="fas fa-phone-alt mr-3"></i> Call to Book
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
-        <section id="services" class="py-20 animate-on-scroll">
+        <!-- Services Section --><section id="services" class="py-20 background-section">
             <div class="container mx-auto px-6 relative z-10">
                 <div class="text-center mb-12 animate-on-scroll fade-in-up">
                     <h2 class="text-3xl font-bold text-gray-800">Our Services</h2>
                     <p class="text-gray-700 mt-2 max-w-2xl mx-auto">Comprehensive solutions to meet all your construction needs from concept to completion.</p>
                 </div>
                 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Service Card 1 -->
-                    <div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up">
+                    <!-- Service Card 1 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up">
                         <div class="bg-orange-100 text-[#f6b757] rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-hard-hat text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">General Contracting</h3>
                         <p class="text-gray-600">We manage every aspect of your project, ensuring it's delivered on time, within budget, and to the highest standards.</p>
                     </div>
-                    <!-- Service Card 2 -->
-                    <div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up" style="transition-delay: 150ms;">
+                    <!-- Service Card 2 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up" style="transition-delay: 150ms;">
                         <div class="bg-orange-100 text-[#f6b757] rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-drafting-compass text-3xl"></i>
                         </div>
                         <h3 class="text-xl font-semibold mb-3">Design & Build</h3>
                         <p class="text-gray-600">A streamlined process from initial design to final construction, offering a single point of contact and responsibility.</p>
                     </div>
-                    <!-- Service Card 3 -->
-                    <div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up" style="transition-delay: 300ms;">
+                    <!-- Service Card 3 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg text-center service-card animate-on-scroll fade-in-up" style="transition-delay: 300ms;">
                         <div class="bg-orange-100 text-[#f6b757] rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-home text-3xl"></i>
                         </div>
@@ -248,44 +323,71 @@
             </div>
         </section>
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="py-20">
+        <!-- Gallery Section --><section id="gallery" class="py-20">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12 animate-on-scroll fade-in-up">
                     <h2 class="text-3xl font-bold text-gray-800">Our Work in Progress</h2>
                     <p class="text-gray-600 mt-2 max-w-2xl mx-auto">A glimpse into the dedication and precision that goes into every project we undertake.</p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="animate-on-scroll fade-in-up gallery-image-container">
+                <div class="grid grid-cols-2 gap-4 md:grid-cols-4 masonry-grid">
+                    <div class="animate-on-scroll fade-in-up gallery-item">
                         <img src="_DSC0116.jpg" alt="Gallery Image 1" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 100ms;">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 100ms;">
                         <img src="_DSC0115.jpg" alt="Gallery Image 2" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 200ms;">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 200ms;">
                         <img src="_DSC0117.jpg" alt="Gallery Image 3" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 300ms;">
-                        <img src="_DSC0096.jpg" alt="Gallery Image 4" class="rounded-lg shadow-md gallery-image">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 300ms;">
+                        <img src="_DSC0118.jpg" alt="Gallery Image 4" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 400ms;">
-                        <img src="_DSC0102.jpg" alt="Gallery Image 5" class="rounded-lg shadow-md gallery-image">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 400ms;">
+                        <img src="_DSC0096.jpg" alt="Gallery Image 5" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 500ms;">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 500ms;">
                         <img src="_DSC0105.jpg" alt="Gallery Image 6" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 600ms;">
-                        <img src="_DSC0118.jpg" alt="Gallery Image 7" class="rounded-lg shadow-md gallery-image">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 600ms;">
+                        <img src="_DSC0112.jpg" alt="Gallery Image 7" class="rounded-lg shadow-md gallery-image">
                     </div>
-                     <div class="animate-on-scroll fade-in-up gallery-image-container" style="transition-delay: 700ms;">
-                        <img src="_DSC0112.jpg" alt="Gallery Image 8" class="rounded-lg shadow-md gallery-image">
+                     <div class="animate-on-scroll fade-in-up gallery-item" style="transition-delay: 700ms;">
+                        <img src="_DSC0102.jpg" alt="Gallery Image 8" class="rounded-lg shadow-md gallery-image">
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- CTA Section -->
-        <section class="bg-[#ff5757]">
+        <!-- Testimonials Section --><section id="testimonials" class="py-20 background-section">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="text-center mb-12 animate-on-scroll fade-in-up">
+                    <h2 class="text-3xl font-bold text-gray-800">What Our Clients Say</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Our reputation is built on the satisfaction of the families and businesses we serve.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg animate-on-scroll fade-in-up shadow-lg">
+                        <i class="fas fa-quote-left text-3xl text-[#f6b757] mb-4"></i>
+                        <p class="text-gray-600 mb-6">We booked our flat in Punam Enclave at an early stage, and we've been so impressed with the transparency and the quality of construction so far. The team is professional and always keeps us updated.</p>
+                        <div class="font-semibold text-gray-800">- R. Verma</div>
+                        <div class="text-sm text-gray-500">Future Punam Enclave Resident</div>
+                    </div>
+                    <!-- Testimonial 2 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg animate-on-scroll fade-in-up" style="transition-delay: 150ms;">
+                        <i class="fas fa-quote-left text-3xl text-[#f6b757] mb-4"></i>
+                        <p class="text-gray-600 mb-6">Securing our future home with BCS Builders was a great decision. The early-bird rates were fantastic, and seeing the project progress with such high-quality materials gives us immense confidence.</p>
+                        <div class="font-semibold text-gray-800">- Priya & Sameer</div>
+                        <div class="text-sm text-gray-500">Future Punam Enclave Residents</div>
+                    </div>
+                    <!-- Testimonial 3 --><div class="bg-white/80 backdrop-blur-sm p-8 rounded-lg animate-on-scroll fade-in-up" style="transition-delay: 300ms;">
+                        <i class="fas fa-quote-left text-3xl text-[#f6b757] mb-4"></i>
+                        <p class="text-gray-600 mb-6">The builders have been very accommodating and communicative. It's reassuring to see our investment taking shape so beautifully. We're excited for the final handover!</p>
+                        <div class="font-semibold text-gray-800">- Kishan Kumar</div>
+                        <div class="text-sm text-gray-500">Future Punam Enclave Resident</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section --><section class="bg-[#ff5757]">
             <div class="container mx-auto px-6 py-16 text-center text-white">
                 <h2 class="text-3xl font-bold mb-3">Have a project in mind?</h2>
                 <p class="text-red-100 mb-8 max-w-2xl mx-auto">Let's discuss how we can turn your vision into a reality. Get in touch with our team for a free consultation.</p>
@@ -295,388 +397,19 @@
 
     </main>
 
-    <!-- Footer -->
-    <footer id="contact" class="bg-gray-800 text-white">
+    <!-- Footer --><footer id="contact" class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-12">
             <div class="grid md:grid-cols-3 gap-8">
-                <!-- About BCS -->
-                <div class="md:col-span-1">
+                <!-- About BCS --><div class="md:col-span-1">
                     <a href="#" class="h-12 inline-block">
                         <img src="BCS Old.jpg" alt="BCS Builders Logo" class="h-full w-auto">
                     </a>
                     <p class="text-gray-400 mt-4">Your trusted partner in construction, committed to building the future of Ranchi. We pride ourselves on integrity, quality, and innovation.</p>
                 </div>
-                <!-- Quick Links -->
-                <div>
+                <!-- Quick Links --><div>
                     <h3 class="text-xl font-bold mb-4">Quick Links</h3>
                     <ul class="space-y-2">
                         <li><a href="#about" class="text-gray-400 hover:text-white transition">About Us</a></li>
                         <li><a href="#projects" class="text-gray-400 hover:text-white transition">Projects</a></li>
                         <li><a href="#services" class="text-gray-400 hover:text-white transition">Services</a></li>
-                        <li><a href="#gallery" class="text-gray-400 hover:text-white transition">Gallery</a></li>
-                        <li><a href="#privacy-policy" id="privacy-policy-link" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
-                    </ul>
-                </div>
-                <!-- Contact Info -->
-                <div>
-                    <h3 class="text-xl font-bold mb-4">Contact Us</h3>
-                    <ul class="space-y-3 text-gray-400">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-[#f6b757]"></i>
-                            <a href="https://maps.app.goo.gl/Wox1Ec6sV5xZoxoQA" target="_blank" rel="noopener noreferrer" class="hover:text-white transition">BCS Builders, Shantiniketan, Tagore Enclave Morabadi, Ranchi, Jharkhand, 834008</a>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-phone-alt mr-3 text-[#f6b757]"></i>
-                            <a href="tel:+919801063161" class="hover:text-white transition">+91 98010 63161</a>
-                        </li>
-                        <li class="flex items-center">
-                            <i class="fas fa-envelope mr-3 text-[#f6b757]"></i>
-                            <a href="mailto:bcscelestialbuilders@gmail.com" class="hover:text-white transition">bcscelestialbuilders@gmail.com</a>
-                        </li>
-                    </ul>
-                    <div class="mt-6 flex space-x-4">
-                        <a href="https://www.facebook.com/share/1C9rnbpdsH/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f text-xl"></i></a>
-                        <a href="https://www.instagram.com/bcsbuildersranchi?igsh=cnJvbzhncjNoZ2Zp" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
-                        <a href="https://wa.me/919801063161" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition"><i class="fab fa-whatsapp text-xl"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-12 border-t border-gray-700 pt-6 text-center text-gray-500">
-                <p>&copy; 2025 BCS Builders. All Rights Reserved. Designed by <a href="https://www.instagram.com/tayanchoubey?igsh=MXBjaTM1ZnB3YzNvZg==" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white underline">Tayan</a>.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- All Modals -->
-    <section id="consultation-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-lg shadow-xl p-8 max-w-lg w-full relative">
-             <button id="close-consultation-modal" class="absolute top-2 right-4 text-gray-500 hover:text-black text-3xl font-bold">&times;</button>
-            <div id="consultation-form-container">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Schedule a Consultation</h2>
-                <form id="consultation-form" class="space-y-4 text-left">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                        <input type="text" id="name" name="name" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#f6b757] focus:border-[#f6b757] sm:text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Preferred Contact Method</label>
-                        <div class="mt-2 flex justify-around">
-                            <label class="flex items-center">
-                                <input type="radio" name="contact_method" value="whatsapp" class="h-4 w-4 text-[#f6b757] focus:ring-[#ff5757] border-gray-300" checked>
-                                <span class="ml-2 text-gray-700">WhatsApp</span>
-                            </label>
-                             <label class="flex items-center">
-                                <input type="radio" name="contact_method" value="phone" class="h-4 w-4 text-[#f6b757] focus:ring-[#ff5757] border-gray-300">
-                                <span class="ml-2 text-gray-700">Phone</span>
-                            </label>
-                             <label class="flex items-center">
-                                <input type="radio" name="contact_method" value="email" class="h-4 w-4 text-[#f6b757] focus:ring-[#ff5757] border-gray-300">
-                                <span class="ml-2 text-gray-700">Email</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <label for="contact_detail" class="block text-sm font-medium text-gray-700">Contact Detail</label>
-                        <input type="tel" id="contact_detail" name="contact_detail" required class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#f6b757] focus:border-[#f6b757] sm:text-sm" placeholder="Your WhatsApp Number">
-                    </div>
-                    <div class="text-center pt-4">
-                        <button type="submit" class="w-full bg-[#ff5757] text-white px-6 py-3 rounded-md hover:bg-[#ff6f6f] transition cta-button font-semibold">Submit Request</button>
-                    </div>
-                </form>
-            </div>
-            <div id="success-message" class="hidden text-center">
-                <div class="mx-auto w-16 h-16 flex items-center justify-center bg-green-100 rounded-full mb-4">
-                    <i class="fas fa-check text-green-500 text-3xl"></i>
-                </div>
-                <h2 class="text-2xl font-bold mb-2 text-gray-800">Thank You!</h2>
-                <p class="text-gray-600">Your consultation request has been received. We will get back to you shortly.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="privacy-policy-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-lg shadow-xl p-8 max-w-3xl w-full relative">
-            <button id="close-privacy-policy" class="absolute top-2 right-4 text-gray-500 hover:text-black text-3xl font-bold">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Privacy Policy</h2>
-            <div class="text-gray-600 space-y-4 max-h-[70vh] overflow-y-auto pr-4 text-left" style="cursor: auto; user-select: text;">
-                <p><strong>Last Updated: July 21, 2025</strong></p>
-                <p>BCS Builders ("us", "we", or "our") operates the website (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.</p>
-                <h3 class="font-semibold text-lg pt-2">1. Information Collection and Use</h3>
-                <p>We only collect information that you voluntarily provide to us via our consultation form, direct email, or other direct contact from you. This may include your name, phone number, and email address. We will not sell or rent this information to anyone.</p>
-                <h3 class="font-semibold text-lg pt-2">2. Use of Data</h3>
-                <p>Any information you provide to us is used solely to respond to you regarding the reason you contacted us. We will not share your information with any third party outside of our organization, other than as necessary to fulfill your request.</p>
-                <h3 class="font-semibold text-lg pt-2">3. Security</h3>
-                <p>The security of your data is important to us, but remember that no method of transmission over the Internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect any Personal Information you provide, we cannot guarantee its absolute security.</p>
-                <h3 class="font-semibold text-lg pt-2">4. Changes to This Privacy Policy</h3>
-                <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. You are advised to review this Privacy Policy periodically for any changes.</p>
-                <h3 class="font-semibold text-lg pt-2">7. Contact Us</h3>
-                <p>If you have any questions about this Privacy Policy, please contact us at <a href="mailto:bcscelestialbuilders@gmail.com" class="text-[#f6b757] hover:underline">bcscelestialbuilders@gmail.com</a>.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="project-details-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4 transition-opacity duration-300">
-        <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full relative">
-            <button id="close-project-details-modal" class="absolute top-2 right-4 text-gray-500 hover:text-black text-3xl font-bold">&times;</button>
-            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Punam Enclave Details</h2>
-            <div class="text-gray-600 space-y-4 text-left" style="cursor: auto; user-select: text;">
-                <p>A G+4 strong building in the heart of Morabadi, which is the lungs of Ranchi town. Amidst the lush greenery is this abode you can call your home. 3BHK luxurious flats with -</p>
-                <ul class="list-none space-y-3 pl-2">
-                    <li class="flex items-center"><i class="fas fa-users mr-3 text-[#f6b757]"></i>A Community Space</li>
-                    <li class="flex items-center"><i class="fas fa-video mr-3 text-[#f6b757]"></i>CCTV Surveillance</li>
-                    <li class="flex items-center"><i class="fas fa-gopuram mr-3 text-[#f6b757]"></i>Temple within the premises</li>
-                    <li class="flex items-center"><i class="fas fa-elevator mr-3 text-[#f6b757]"></i>Lift</li>
-                    <li class="flex items-center"><i class="fas fa-tint mr-3 text-[#f6b757]"></i>24x7 Water Supply</li>
-                </ul>
-                <p class="pt-4 font-semibold">All 3BHKs ranging from 1465 to 1510 sqft.</p>
-            </div>
-        </div>
-    </section>
-    
-    <section id="gallery-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4 transition-opacity duration-300">
-        <button id="close-gallery-modal" class="absolute top-4 right-4 text-white hover:text-gray-300 text-4xl font-bold">&times;</button>
-        <div class="relative max-w-4xl max-h-[90vh] w-full h-full">
-            <img id="gallery-modal-image" src="" alt="Enlarged gallery view" class="w-full h-full object-contain">
-        </div>
-    </section>
-
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- Start of New Mobile Menu Logic ---
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        const openMobileMenu = () => {
-            if (mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.remove('hidden');
-                history.pushState({ mobileMenuOpen: true }, 'Mobile Menu');
-            }
-        };
-
-        const closeMobileMenu = () => {
-            if (!mobileMenu.classList.contains('hidden')) {
-                mobileMenu.classList.add('hidden');
-            }
-        };
-
-        mobileMenuButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (mobileMenu.classList.contains('hidden')) {
-                openMobileMenu();
-            } else {
-                history.back(); // Triggers popstate which closes the menu
-            }
-        });
-
-        window.addEventListener('popstate', () => {
-            closeMobileMenu();
-        });
-        // --- End of New Mobile Menu Logic ---
-
-        // Smooth scrolling for ALL anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            if (anchor.getAttribute('href') !== '#privacy-policy') {
-                anchor.addEventListener('click', function (e) {
-                    const targetId = this.getAttribute('href');
-                    if (targetId && targetId.length > 1) {
-                        e.preventDefault();
-                        const targetElement = document.querySelector(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }
-                    
-                    if (!mobileMenu.classList.contains('hidden')) {
-                       history.back();
-                    }
-                });
-            }
-        });
-
-        // Modal generic closing function
-        const closeModal = (modal) => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        };
-        
-        // Modal generic opening function
-        const openModal = (modal) => {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        // Privacy Policy Modal Logic
-        const privacyPolicyLink = document.getElementById('privacy-policy-link');
-        const privacyPolicyModal = document.getElementById('privacy-policy-modal');
-        const closePrivacyPolicyButton = document.getElementById('close-privacy-policy');
-
-        if (privacyPolicyLink) {
-            privacyPolicyLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(privacyPolicyModal);
-            });
-        }
-        if (closePrivacyPolicyButton) {
-            closePrivacyPolicyButton.addEventListener('click', () => closeModal(privacyPolicyModal));
-        }
-        if (privacyPolicyModal) {
-            privacyPolicyModal.addEventListener('click', (e) => {
-                if (e.target === privacyPolicyModal) closeModal(privacyPolicyModal);
-            });
-        }
-
-        // Consultation Modal Logic
-        const consultationCtaButton = document.getElementById('consultation-cta-button');
-        const consultationModal = document.getElementById('consultation-modal');
-        const closeConsultationModalButton = document.getElementById('close-consultation-modal');
-        const consultationForm = document.getElementById('consultation-form');
-        const consultationFormContainer = document.getElementById('consultation-form-container');
-        const successMessage = document.getElementById('success-message');
-        const contactDetailInput = document.getElementById('contact_detail');
-        const contactMethodRadios = document.querySelectorAll('input[name="contact_method"]');
-
-        if (consultationCtaButton) {
-            consultationCtaButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(consultationModal);
-                // Reset form on open
-                consultationFormContainer.classList.remove('hidden');
-                successMessage.classList.add('hidden');
-                consultationForm.reset();
-                contactDetailInput.type = 'tel';
-                contactDetailInput.placeholder = 'Your WhatsApp Number';
-            });
-        }
-        
-        if(closeConsultationModalButton) {
-            closeConsultationModalButton.addEventListener('click', () => closeModal(consultationModal));
-        }
-        if(consultationModal) {
-            consultationModal.addEventListener('click', (e) => {
-                if (e.target === consultationModal) closeModal(consultationModal);
-            });
-        }
-        
-        if(contactMethodRadios) {
-            contactMethodRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    if(e.target.value === 'email') {
-                        contactDetailInput.type = 'email';
-                        contactDetailInput.placeholder = 'Your Email Address';
-                    } else if (e.target.value === 'whatsapp') {
-                        contactDetailInput.type = 'tel';
-                        contactDetailInput.placeholder = 'Your WhatsApp Number';
-                    } else {
-                        contactDetailInput.type = 'tel';
-                        contactDetailInput.placeholder = 'Your Phone Number';
-                    }
-                });
-            });
-        }
-
-        if(consultationForm) {
-            consultationForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                consultationFormContainer.classList.add('hidden');
-                successMessage.classList.remove('hidden');
-                
-                setTimeout(() => {
-                    closeModal(consultationModal);
-                }, 3000); // Hide modal after 3 seconds
-            });
-        }
-        
-        // Contact Dropdown Logic
-        const contactDropdownButton = document.getElementById('contact-dropdown-button');
-        const contactDropdownMenu = document.getElementById('contact-dropdown-menu');
-
-        if(contactDropdownButton) {
-            contactDropdownButton.addEventListener('click', () => {
-                contactDropdownMenu.classList.toggle('hidden');
-            });
-        }
-
-        // Close dropdown when clicking outside
-        window.addEventListener('click', function(e){
-            if (contactDropdownButton && !contactDropdownButton.contains(e.target) && contactDropdownMenu && !contactDropdownMenu.contains(e.target)){
-                contactDropdownMenu.classList.add('hidden');
-            }
-        });
-        
-        // Project Details Modal Logic
-        const projectCardTrigger = document.getElementById('project-card-trigger');
-        const projectDetailsModal = document.getElementById('project-details-modal');
-        const closeProjectDetailsModalButton = document.getElementById('close-project-details-modal');
-
-        if(projectCardTrigger) {
-            projectCardTrigger.addEventListener('click', (e) => {
-                e.preventDefault();
-                openModal(projectDetailsModal);
-            });
-        }
-
-        if(closeProjectDetailsModalButton) {
-            closeProjectDetailsModalButton.addEventListener('click', () => closeModal(projectDetailsModal));
-        }
-        if(projectDetailsModal) {
-            projectDetailsModal.addEventListener('click', (e) => {
-                if (e.target === projectDetailsModal) closeModal(projectDetailsModal);
-            });
-        }
-
-        // Gallery Modal Logic
-        const galleryImages = document.querySelectorAll('.gallery-image');
-        const galleryModal = document.getElementById('gallery-modal');
-        const galleryModalImage = document.getElementById('gallery-modal-image');
-        const closeGalleryModalButton = document.getElementById('close-gallery-modal');
-
-        galleryImages.forEach(image => {
-            image.addEventListener('click', () => {
-                galleryModalImage.src = image.src;
-                openModal(galleryModal);
-            });
-        });
-
-        if (closeGalleryModalButton) {
-            closeGalleryModalButton.addEventListener('click', () => closeModal(galleryModal));
-        }
-        if (galleryModal) {
-            galleryModal.addEventListener('click', (e) => {
-                if (e.target === galleryModal) closeModal(galleryModal);
-            });
-        }
-
-
-        // Scroll Animation Logic
-        const animatedElements = document.querySelectorAll('.animate-on-scroll');
-        const servicesSection = document.getElementById('services');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    if(entry.target.id === 'services') {
-                        // Don't unobserve the services section to allow re-animation
-                    } else if (!entry.target.classList.contains('pop-in')) {
-                       observer.unobserve(entry.target);
-                    }
-                } else {
-                     if (entry.target.classList.contains('pop-in')) {
-                        entry.target.classList.remove('is-visible');
-                    }
-                     if(entry.target.id === 'services') {
-                        entry.target.classList.remove('is-visible');
-                    }
-                }
-            });
-        }, { threshold: 0.15 });
-        
-        animatedElements.forEach(el => observer.observe(el));
-        if (servicesSection) {
-            observer.observe(servicesSection);
-        }
-    });
-    </script>
-
-</body>
-</html>
+                        <li><a href="#gallery" class="text-gray-400 hover:
